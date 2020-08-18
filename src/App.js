@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import PathfindingVisualizer from "./component/PathfindingVisualiser";
+import PathfindingVisualizer from "./components/Pathfinder/Pathfinding";
 
 function App() {
   console.log("Icons by Stockio.com");

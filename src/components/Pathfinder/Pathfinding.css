@@ -1,0 +1,34 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@1,500&display=swap");
+
+html,
+body {
+  background-color: whitesmoke;
+}
+
+.grid {
+  margin: 100px 0 0;
+}
+
+.button-sort {
+  border: none;
+  font-family: "Rubik", sans-serif;
+}
+
+.title {
+  font-family: "Rubik", sans-serif;
+  color: rgb(16, 121, 121);
+  font-size: 2rem;
+  font-style: italic;
+}
+
+h4,
+a {
+  text-decoration: none;
+  font-family: "Rubik", sans-serif;
+  color: rgb(16, 121, 121);
+  font-style: italic;
+}
+
+button {
+  cursor: pointer;
+}

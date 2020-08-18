@@ -1,9 +1,9 @@
-const w = window.innerWidth / 72;
-const h = window.innerHeight / 16.2;
-let START_NODE_ROW = 10;
-let START_NODE_COL = 15;
-let FINISH_NODE_ROW = 10;
-let FINISH_NODE_COL = 35;
+const w = 20;
+const h = 49;
+export const START_NODE_ROW = 10;
+export const START_NODE_COL = 15;
+export const FINISH_NODE_ROW = 10;
+export const FINISH_NODE_COL = 35;
 
 export const getInitialGrid = () => {
   const grid = [];
@@ -27,19 +27,12 @@ const createNode = (col, row) => {
     isVisited: false,
     isWall: false,
     previousNode: null,
+    weight: 0,
   };
 };
 
 export const toggleWall = (grid, row, col) => {
-  // grid[row][col].isWall = !grid[row][col].isWall;
-  const newGrid = grid.slice();
-  const node = newGrid[row][col];
-  const newNode = {
-    ...node,
-    isWall: !node.isWall,
-  };
-  newGrid[row][col] = newNode;
-  return newGrid;
+  grid[row][col].isWall = !grid[row][col].isWall;
 };
 
 export const toggleStart = (grid, row, col) => {
@@ -48,3 +41,13 @@ export const toggleStart = (grid, row, col) => {
 export const toggleEnd = (grid, row, col) => {
   grid[row][col].isFinish = !grid[row][col].isFinish;
 };
+
+export function getNodesInShortestPathOrder(finishNode) {
+  const nodesInShortestPathOrder = [];
+  let currentNode = finishNode;
+  while (currentNode !== null) {
+    nodesInShortestPathOrder.unshift(currentNode);
+    currentNode = currentNode.previousNode;
+  }
+  return nodesInShortestPathOrder;
+}
