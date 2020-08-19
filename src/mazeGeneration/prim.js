@@ -1,6 +1,6 @@
-import { grid } from "../components/Pathfinder/Pathfinding";
+import { toggleWall } from "../helper";
 
-export function prim() {
+export function prim(grid) {
   let maze = getAllNodes(grid);
   // Columns
   for (let i = 0; i < 49; i++) {

@@ -8,6 +8,7 @@ import {
 import { bellmanFord } from "../../algorithms/bellmanFord";
 import "./Pathfinding.css";
 import { simpleMaze } from "../../mazeGeneration/simpleMaze";
+import { recursiveDivision } from "../../mazeGeneration/recursiveDivision";
 import {
   getInitialGrid,
   toggleWall,
@@ -203,6 +204,12 @@ export default class PathfindingVisualiser extends React.Component {
     simpleMaze(grid);
   }
 
+  visualizeRecursiveDivision() {
+    const { grid, start, end } = this.state;
+    this.unvisitNodes(true, start, end);
+    recursiveDivision(grid);
+  }
+
   render() {
     const { grid, mouseIsPressed } = this.state;
     // if (!visualizing) {
@@ -253,6 +260,12 @@ export default class PathfindingVisualiser extends React.Component {
             className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-sort"
           >
             Simple Maze
+          </button>
+          <button
+            onClick={() => this.visualizeRecursiveDivision()}
+            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-sort"
+          >
+            Recursive Division
           </button>
           <button
             onClick={() => this.clearGrid()}
