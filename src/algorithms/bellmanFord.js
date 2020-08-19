@@ -3,7 +3,7 @@ export function bellmanFord(grid, startNode, finishNode) {
   const nodes = getAllNodes(grid);
   startNode.previousNode = null;
   startNode.distance = 0;
-  let visited = Array(19 * 49).fill(false);
+  let visited = new Array(19 * 49).fill(false);
   for (let i = 0; i < 19 * 49 - 1; i++) {
     for (const node of nodes) {
       if (node.isWall) continue;

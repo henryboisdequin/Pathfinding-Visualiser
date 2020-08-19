@@ -7,6 +7,7 @@ import {
 } from "../../algorithms/dijkstra";
 import { bellmanFord } from "../../algorithms/bellmanFord";
 import "./Pathfinding.css";
+import { simpleMaze } from "../../mazeGeneration/simpleMaze";
 import {
   getInitialGrid,
   toggleWall,
@@ -102,8 +103,50 @@ export default class PathfindingVisualiser extends React.Component {
     }
   }
 
-  clearWalls() {
-    this.componentDidMount();
+  clearGrid() {
+    const { visualizing } = this.state;
+    if (visualizing) return;
+    this.unvisitNodes(
+      true,
+      [START_NODE_ROW, START_NODE_COL],
+      [FINISH_NODE_ROW, FINISH_NODE_COL]
+    );
+    this.setState({
+      start: [START_NODE_ROW, START_NODE_COL],
+      end: [FINISH_NODE_ROW, FINISH_NODE_COL],
+    });
+  }
+
+  unvisitNodes(removeWalls, start, end) {
+    const { grid } = this.state;
+    for (let row = 0; row < 20; row++) {
+      for (let col = 0; col < 49; col++) {
+        let node = grid[row][col];
+        document.getElementById(`node-${node.row}-${node.col}`).className =
+          "node";
+        node.isVisited = false;
+        node.previousNode = null;
+        node.distance = Infinity;
+        node.weight = 0;
+        if (removeWalls) {
+          node.isWall = false;
+        } else if (node.isWall) {
+          document.getElementById(`node-${node.row}-${node.col}`).className =
+            "node node-wall";
+        }
+        if (row === start[0] && col === start[1]) {
+          document.getElementById(`node-${start[0]}-${start[1]}`).className =
+            "node node-start";
+          node.isStart = true;
+        }
+        if (row === end[0] && col === end[1]) {
+          document.getElementById(`node-${end[0]}-${end[1]}`).className =
+            "node node-finish";
+          node.isFinish = true;
+        }
+      }
+    }
+    this.setState({ grid: grid, visualizing: false });
   }
 
   animateShortestPath(nodesInShortestPathOrder) {
@@ -154,6 +197,12 @@ export default class PathfindingVisualiser extends React.Component {
     }, 10000);
   }
 
+  visualizeSimpleMaze() {
+    const { grid, start, end } = this.state;
+    this.unvisitNodes(true, start, end);
+    simpleMaze(grid);
+  }
+
   render() {
     const { grid, mouseIsPressed } = this.state;
     // if (!visualizing) {
@@ -189,25 +238,34 @@ export default class PathfindingVisualiser extends React.Component {
           })}
           <button
             onClick={() => this.visualizeDijkstra()}
-            className="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-sort"
+            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-sort"
           >
             Visualize Dijkstra
           </button>
           <button
             onClick={() => this.visualizeBellmanFord()}
-            className="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-sort"
+            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-sort"
           >
             Visualize Bellman Ford
           </button>
           <button
-            onClick={() => this.clearWalls()}
-            className="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-sort"
+            onClick={() => this.visualizeSimpleMaze()}
+            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-sort"
           >
-            Clear Walls
+            Simple Maze
+          </button>
+          <button
+            onClick={() => this.clearGrid()}
+            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-sort"
+          >
+            Clear Grid
           </button>
         </div>
         <h4>
-          <a href="https://github.com/henryboisdequin/Pathfinding-Visualiser">
+          <a
+            className="button"
+            href="https://github.com/henryboisdequin/Pathfinding-Visualiser"
+          >
             Pathfinding Visualizer
           </a>{" "}
           by Henry Boisdequin

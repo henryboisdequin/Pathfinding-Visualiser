@@ -1,3 +1,4 @@
+// Width, height
 const w = 20;
 const h = 49;
 export const START_NODE_ROW = 10;
