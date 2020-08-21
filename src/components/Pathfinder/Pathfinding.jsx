@@ -1,12 +1,10 @@
 import React from "react";
 import Node from "../Node/Node";
 import "tachyons";
-import {
-  dijkstra,
-  getNodesInShortestPathOrderD,
-} from "../../algorithms/dijkstra";
+import { dijkstra } from "../../algorithms/dijkstra";
 import { bellmanFord } from "../../algorithms/bellmanFord";
-import { bfs, getNodesInShortestPathOrderBFS } from "../../algorithms/bfs";
+import { bfs } from "../../algorithms/bfs";
+import { dfs } from "../../algorithms/dfs";
 import "./Pathfinding.css";
 import { simpleMaze } from "../../mazeGeneration/simpleMaze";
 import { recursiveDivision } from "../../mazeGeneration/recursiveDivision";
@@ -20,6 +18,7 @@ import {
   START_NODE_COL,
   FINISH_NODE_ROW,
   FINISH_NODE_COL,
+  getNodesInShortestPathOrder,
 } from "../../helper";
 
 export default class PathfindingVisualiser extends React.Component {
@@ -187,7 +186,7 @@ export default class PathfindingVisualiser extends React.Component {
     const startNode = grid[start[0]][start[1]];
     const finishNode = grid[end[0]][end[1]];
     const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
-    const nodesInShortestPathOrder = getNodesInShortestPathOrderD(finishNode);
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
     this.animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
     setTimeout(() => {
       this.setState({ visualizing: false });
@@ -225,7 +224,24 @@ export default class PathfindingVisualiser extends React.Component {
     const startNode = grid[start[0]][start[1]];
     const finishNode = grid[end[0]][end[1]];
     const visitedNodesInOrder = bfs(grid, startNode, finishNode);
-    const nodesInShortestPathOrder = getNodesInShortestPathOrderBFS(finishNode);
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
+    this.animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
+    setTimeout(() => {
+      this.setState({ visualizing: false });
+    }, 10000);
+  }
+
+  visualizeDFS() {
+    this.setState({
+      message:
+        "Visualizing DFS, an unweighted algorithm which does not guarantee the shortest path.",
+    });
+    const { grid, start, end } = this.state;
+    this.setState({ visualizing: true });
+    const startNode = grid[start[0]][start[1]];
+    const finishNode = grid[end[0]][end[1]];
+    const visitedNodesInOrder = dfs(grid, startNode, finishNode);
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
     this.animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
     setTimeout(() => {
       this.setState({ visualizing: false });
@@ -302,6 +318,12 @@ export default class PathfindingVisualiser extends React.Component {
             className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
           >
             Visualize BFS
+          </button>
+          <button
+            onClick={() => this.visualizeDFS()}
+            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
+          >
+            Visualize DFS
           </button>
           <button
             onClick={() => this.visualizeSimpleMaze()}

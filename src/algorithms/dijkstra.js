@@ -46,13 +46,3 @@ function getAllNodes(grid) {
   }
   return nodes;
 }
-
-export function getNodesInShortestPathOrderD(finishNode) {
-  const nodesInShortestPathOrder = [];
-  let currentNode = finishNode;
-  while (currentNode !== null) {
-    nodesInShortestPathOrder.unshift(currentNode);
-    currentNode = currentNode.previousNode;
-  }
-  return nodesInShortestPathOrder;
-}

@@ -2,8 +2,8 @@ Todo:
 
 - [x] Movement of start, end node
 - [ ] A\*
-- [ ] BFS
-- [ ] DFS
+- [x] BFS
+- [x] DFS
 - [x] Bellman Ford
 - [ ] Bidirectional A\*
 - [ ] My own algorithm
