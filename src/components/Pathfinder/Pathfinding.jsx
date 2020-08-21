@@ -6,9 +6,11 @@ import {
   getNodesInShortestPathOrderD,
 } from "../../algorithms/dijkstra";
 import { bellmanFord } from "../../algorithms/bellmanFord";
+import { bfs, getNodesInShortestPathOrderBFS } from "../../algorithms/bfs";
 import "./Pathfinding.css";
 import { simpleMaze } from "../../mazeGeneration/simpleMaze";
 import { recursiveDivision } from "../../mazeGeneration/recursiveDivision";
+import { prim } from "../../mazeGeneration/prim";
 import {
   getInitialGrid,
   toggleWall,
@@ -41,7 +43,8 @@ export default class PathfindingVisualiser extends React.Component {
   }
 
   handleMouseDown(row, col) {
-    const { start, end, grid } = this.state;
+    const { start, end, grid, visualizing } = this.state;
+    if (visualizing) return;
     if (row === start[0] && col === start[1]) {
       this.setState({ movingStart: true });
     } else if (row === end[0] && col === end[1]) {
@@ -63,9 +66,11 @@ export default class PathfindingVisualiser extends React.Component {
       start,
       end,
       grid,
+      visualizing,
     } = this.state;
 
     if (!mouseIsPressed) return;
+    if (visualizing) return;
 
     if (movingStart) {
       toggleStart(grid, row, col);
@@ -104,8 +109,19 @@ export default class PathfindingVisualiser extends React.Component {
     }
   }
 
+  animateMaze(nodesInMaze) {
+    for (let i = 0; i <= nodesInMaze.length; i++) {
+      setTimeout(() => {
+        const node = nodesInMaze[i];
+        document.getElementById(`node-${node.row}-${node.col}`).className =
+          "node node-wall";
+      }, 10 * i);
+    }
+  }
+
   clearGrid() {
     const { visualizing } = this.state;
+    const message = "Pick an Algorithm to Visualize!";
     if (visualizing) return;
     this.unvisitNodes(
       true,
@@ -115,6 +131,7 @@ export default class PathfindingVisualiser extends React.Component {
     this.setState({
       start: [START_NODE_ROW, START_NODE_COL],
       end: [FINISH_NODE_ROW, FINISH_NODE_COL],
+      message,
     });
   }
 
@@ -124,7 +141,7 @@ export default class PathfindingVisualiser extends React.Component {
       for (let col = 0; col < 49; col++) {
         let node = grid[row][col];
         document.getElementById(`node-${node.row}-${node.col}`).className =
-          "node";
+          "node ";
         node.isVisited = false;
         node.previousNode = null;
         node.distance = Infinity;
@@ -163,7 +180,7 @@ export default class PathfindingVisualiser extends React.Component {
   visualizeDijkstra() {
     this.setState({
       message:
-        "Visualizing Dijkstra, a weighted algorithm with guarantees the shortest path.",
+        "Visualizing Dijkstra, a weighted algorithm which guarantees the shortest path.",
     });
     const { grid, start, end } = this.state;
     this.setState({ visualizing: true });
@@ -180,7 +197,7 @@ export default class PathfindingVisualiser extends React.Component {
   visualizeBellmanFord() {
     this.setState({
       message:
-        "Visualizing Bellman Ford, a weighted algorithm with guarantees the shortest path.",
+        "Visualizing Bellman Ford, a weighted algorithm which guarantees the shortest path.",
     });
     const { grid, start, end } = this.state;
     this.setState({ visualizing: true });
@@ -192,6 +209,23 @@ export default class PathfindingVisualiser extends React.Component {
       startNode,
       finishNode
     )[1];
+    this.animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
+    setTimeout(() => {
+      this.setState({ visualizing: false });
+    }, 10000);
+  }
+
+  visualizeBFS() {
+    this.setState({
+      message:
+        "Visualizing BFS, an unweighted algorithm which guarantees the shortest path.",
+    });
+    const { grid, start, end } = this.state;
+    this.setState({ visualizing: true });
+    const startNode = grid[start[0]][start[1]];
+    const finishNode = grid[end[0]][end[1]];
+    const visitedNodesInOrder = bfs(grid, startNode, finishNode);
+    const nodesInShortestPathOrder = getNodesInShortestPathOrderBFS(finishNode);
     this.animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
     setTimeout(() => {
       this.setState({ visualizing: false });
@@ -210,14 +244,22 @@ export default class PathfindingVisualiser extends React.Component {
     recursiveDivision(grid);
   }
 
+  visualizePrim() {
+    const { grid, start, end } = this.state;
+    this.unvisitNodes(true, start, end);
+    // const mazeNodes = prim(grid);
+    prim(grid);
+    // this.animateMaze(mazeNodes);
+  }
+
   render() {
-    const { grid, mouseIsPressed } = this.state;
+    const { grid, mouseIsPressed, message } = this.state;
     // if (!visualizing) {
     return (
       <>
         {/* <h1 className="title">Pathfinding Visualizer</h1> */}
         <div className="grid">
-          <h4>{this.state.message}</h4>
+          <h4>{message}</h4>
           {grid.map((row, rowIdx) => {
             return (
               <div key={rowIdx}>
@@ -245,31 +287,43 @@ export default class PathfindingVisualiser extends React.Component {
           })}
           <button
             onClick={() => this.visualizeDijkstra()}
-            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-sort"
+            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
           >
             Visualize Dijkstra
           </button>
           <button
             onClick={() => this.visualizeBellmanFord()}
-            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-sort"
+            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
           >
             Visualize Bellman Ford
           </button>
           <button
+            onClick={() => this.visualizeBFS()}
+            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
+          >
+            Visualize BFS
+          </button>
+          <button
             onClick={() => this.visualizeSimpleMaze()}
-            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-sort"
+            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
           >
             Simple Maze
           </button>
           <button
             onClick={() => this.visualizeRecursiveDivision()}
-            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-sort"
+            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
           >
             Recursive Division
           </button>
           <button
+            onClick={() => this.visualizePrim()}
+            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
+          >
+            Prim
+          </button>
+          <button
             onClick={() => this.clearGrid()}
-            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-sort"
+            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
           >
             Clear Grid
           </button>

@@ -1,17 +1,16 @@
-export function dijkstra(grid, startNode, finishNode) {
-  // Add weighted dijkstra
+export function bfs(grid, startNode, finishNode) {
   const visitedNodesInOrder = [];
   startNode.distance = 0;
   const unvisitedNodes = getAllNodes(grid);
-  while (!!unvisitedNodes.length) {
+  while (unvisitedNodes.length) {
     sortNodesByDistance(unvisitedNodes);
-    const closestNode = unvisitedNodes.shift();
-    if (closestNode.isWall) continue;
-    if (closestNode.distance === Infinity) return visitedNodesInOrder;
-    closestNode.isVisited = true;
-    visitedNodesInOrder.push(closestNode);
-    if (closestNode === finishNode) return visitedNodesInOrder;
-    updateUnvisitedNeighbors(closestNode, grid);
+    const currentNode = unvisitedNodes.shift();
+    if (currentNode.isWall) continue;
+    if (currentNode.distance === Infinity) return visitedNodesInOrder;
+    currentNode.isVisited = true;
+    visitedNodesInOrder.push(currentNode);
+    if (currentNode === finishNode) return visitedNodesInOrder;
+    updateUnvisitedNeighbors(currentNode, grid);
   }
 }
 
@@ -47,7 +46,7 @@ function getAllNodes(grid) {
   return nodes;
 }
 
-export function getNodesInShortestPathOrderD(finishNode) {
+export function getNodesInShortestPathOrderBFS(finishNode) {
   const nodesInShortestPathOrder = [];
   let currentNode = finishNode;
   while (currentNode !== null) {
