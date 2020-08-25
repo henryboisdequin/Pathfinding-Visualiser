@@ -5,6 +5,7 @@ import { dijkstra } from "../../algorithms/dijkstra";
 import { bellmanFord } from "../../algorithms/bellmanFord";
 import { bfs } from "../../algorithms/bfs";
 import { dfs } from "../../algorithms/dfs";
+import { aStar } from "../../algorithms/aStar";
 import "./Pathfinding.css";
 import { simpleMaze } from "../../mazeGeneration/simpleMaze";
 import { recursiveDivision } from "../../mazeGeneration/recursiveDivision";
@@ -248,6 +249,23 @@ export default class PathfindingVisualiser extends React.Component {
     }, 10000);
   }
 
+  visualizeAStar() {
+    this.setState({
+      message:
+        "Visualizing A*, a weighted algorithm which guarantees the shortest path.",
+    });
+    const { grid, start, end } = this.state;
+    this.setState({ visualizing: true });
+    const startNode = grid[start[0]][start[1]];
+    const finishNode = grid[end[0]][end[1]];
+    const visitedNodesInOrder = aStar(grid, startNode, finishNode);
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
+    this.animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
+    setTimeout(() => {
+      this.setState({ visualizing: false });
+    }, 10000);
+  }
+
   visualizeSimpleMaze() {
     const { grid, start, end } = this.state;
     this.unvisitNodes(true, start, end);
@@ -269,97 +287,205 @@ export default class PathfindingVisualiser extends React.Component {
   }
 
   render() {
-    const { grid, mouseIsPressed, message } = this.state;
-    // if (!visualizing) {
-    return (
-      <>
-        {/* <h1 className="title">Pathfinding Visualizer</h1> */}
-        <div className="grid">
-          <h4>{message}</h4>
-          {grid.map((row, rowIdx) => {
-            return (
-              <div key={rowIdx}>
-                {row.map((node, nodeIdx) => {
-                  const { row, col, isFinish, isStart, isWall } = node;
-                  return (
-                    <Node
-                      key={nodeIdx}
-                      col={col}
-                      isFinish={isFinish}
-                      isStart={isStart}
-                      isWall={isWall}
-                      mouseIsPressed={mouseIsPressed}
-                      onMouseDown={(row, col) => this.handleMouseDown(row, col)}
-                      onMouseEnter={(row, col) =>
-                        this.handleMouseEnter(row, col)
-                      }
-                      onMouseUp={() => this.handleMouseUp()}
-                      row={row}
-                    />
-                  );
-                })}
-              </div>
-            );
-          })}
-          <button
-            onClick={() => this.visualizeDijkstra()}
-            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
-          >
-            Visualize Dijkstra
-          </button>
-          <button
-            onClick={() => this.visualizeBellmanFord()}
-            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
-          >
-            Visualize Bellman Ford
-          </button>
-          <button
-            onClick={() => this.visualizeBFS()}
-            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
-          >
-            Visualize BFS
-          </button>
-          <button
-            onClick={() => this.visualizeDFS()}
-            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
-          >
-            Visualize DFS
-          </button>
-          <button
-            onClick={() => this.visualizeSimpleMaze()}
-            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
-          >
-            Simple Maze
-          </button>
-          <button
-            onClick={() => this.visualizeRecursiveDivision()}
-            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
-          >
-            Recursive Division
-          </button>
-          <button
-            onClick={() => this.visualizePrim()}
-            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
-          >
-            Prim
-          </button>
-          <button
-            onClick={() => this.clearGrid()}
-            className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
-          >
-            Clear Grid
-          </button>
-        </div>
-        <h4>
-          <a
-            className="button"
-            href="https://github.com/henryboisdequin/Pathfinding-Visualiser"
-          >
-            Pathfinding Visualizer
-          </a>{" "}
-          by Henry Boisdequin
-        </h4>
-      </>
-    );
+    const { grid, mouseIsPressed, message, visualizing } = this.state;
+    if (!visualizing) {
+      return (
+        <>
+          {/* <h1 className="title">Pathfinding Visualizer</h1> */}
+          <div className="grid">
+            <h4>{message}</h4>
+            {grid.map((row, rowIdx) => {
+              return (
+                <div key={rowIdx}>
+                  {row.map((node, nodeIdx) => {
+                    const { row, col, isFinish, isStart, isWall } = node;
+                    return (
+                      <Node
+                        key={nodeIdx}
+                        col={col}
+                        isFinish={isFinish}
+                        isStart={isStart}
+                        isWall={isWall}
+                        mouseIsPressed={mouseIsPressed}
+                        onMouseDown={(row, col) =>
+                          this.handleMouseDown(row, col)
+                        }
+                        onMouseEnter={(row, col) =>
+                          this.handleMouseEnter(row, col)
+                        }
+                        onMouseUp={() => this.handleMouseUp()}
+                        row={row}
+                      />
+                    );
+                  })}
+                </div>
+              );
+            })}
+            <button
+              onClick={() => this.visualizeDijkstra()}
+              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
+            >
+              Visualize Dijkstra
+            </button>
+            <button
+              onClick={() => this.visualizeBellmanFord()}
+              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
+            >
+              Visualize Bellman Ford
+            </button>
+            <button
+              onClick={() => this.visualizeBFS()}
+              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
+            >
+              Visualize BFS
+            </button>
+            <button
+              onClick={() => this.visualizeAStar()}
+              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
+            >
+              Visualize A*
+            </button>
+            <button
+              onClick={() => this.visualizeDFS()}
+              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
+            >
+              Visualize DFS
+            </button>
+            <button
+              onClick={() => this.visualizeSimpleMaze()}
+              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
+            >
+              Simple Maze
+            </button>
+            <button
+              onClick={() => this.visualizeRecursiveDivision()}
+              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
+            >
+              Recursive Division
+            </button>
+            <button
+              onClick={() => this.visualizePrim()}
+              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
+            >
+              Prim
+            </button>
+            <button
+              onClick={() => this.clearGrid()}
+              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
+            >
+              Clear Grid
+            </button>
+          </div>
+          <h4>
+            <a
+              className="button"
+              href="https://github.com/henryboisdequin/Pathfinding-Visualiser"
+            >
+              Pathfinding Visualizer
+            </a>{" "}
+            by Henry Boisdequin
+          </h4>
+        </>
+      );
+    } else {
+      return (
+        <>
+          {/* <h1 className="title">Pathfinding Visualizer</h1> */}
+          <div className="grid">
+            <h4>{message}</h4>
+            {grid.map((row, rowIdx) => {
+              return (
+                <div key={rowIdx}>
+                  {row.map((node, nodeIdx) => {
+                    const { row, col, isFinish, isStart, isWall } = node;
+                    return (
+                      <Node
+                        key={nodeIdx}
+                        col={col}
+                        isFinish={isFinish}
+                        isStart={isStart}
+                        isWall={isWall}
+                        mouseIsPressed={mouseIsPressed}
+                        onMouseDown={(row, col) =>
+                          this.handleMouseDown(row, col)
+                        }
+                        onMouseEnter={(row, col) =>
+                          this.handleMouseEnter(row, col)
+                        }
+                        onMouseUp={() => this.handleMouseUp()}
+                        row={row}
+                      />
+                    );
+                  })}
+                </div>
+              );
+            })}
+            <button
+              disabled
+              className="f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
+            >
+              Visualize Dijkstra
+            </button>
+            <button
+              disabled
+              className="f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
+            >
+              Visualize Bellman Ford
+            </button>
+            <button
+              disabled
+              className="f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
+            >
+              Visualize BFS
+            </button>
+            <button
+              disabled
+              className="f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
+            >
+              Visualize A*
+            </button>
+            <button
+              disabled
+              className="f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
+            >
+              Visualize DFS
+            </button>
+            <button
+              disabled
+              className="f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
+            >
+              Simple Maze
+            </button>
+            <button
+              disabled
+              className="f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
+            >
+              Recursive Division
+            </button>
+            <button
+              disabled
+              className="f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
+            >
+              Prim
+            </button>
+            <button
+              disabled
+              className="f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
+            >
+              Clear Grid
+            </button>
+          </div>
+          <h4>
+            <a
+              className="button"
+              href="https://github.com/henryboisdequin/Pathfinding-Visualiser"
+            >
+              Pathfinding Visualizer
+            </a>{" "}
+            by Henry Boisdequin
+          </h4>
+        </>
+      );
+    }
   }
 }

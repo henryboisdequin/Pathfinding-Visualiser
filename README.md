@@ -5,7 +5,7 @@ Todo:
 - [x] BFS
 - [x] DFS
 - [x] Bellman Ford
-- [ ] Bidirectional A\*
+- [ ] Bidirectional Dijkstra's
 - [ ] My own algorithm
 - [ ] Add maze generation with Prim algorithm
 - [x] Add simple maze
