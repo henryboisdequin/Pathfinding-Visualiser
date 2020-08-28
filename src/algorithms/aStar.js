@@ -9,6 +9,7 @@ export function aStar(grid, startNode, finishNode) {
     let currentNode = unvisitedNodes.pop();
     if (currentNode.isWall) continue;
     if (currentNode === finishNode) return visitedNodesInOrder;
+    heuristic(currentNode, finishNode);
     currentNode.isVisited = true;
     visitedNodesInOrder.push(currentNode);
     let neighbors = getUnvisitedNeighbors(currentNode, grid);

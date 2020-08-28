@@ -1,20 +1,32 @@
 import React from "react";
-import Node from "../Node/Node";
+
+// Styles
+import "./Pathfinding.css";
 import "tachyons";
+
+// Node component
+import Node from "../Node/Node";
+
+// Pathfinding algorithms
 import { dijkstra } from "../../algorithms/dijkstra";
 import { bellmanFord } from "../../algorithms/bellmanFord";
 import { bfs } from "../../algorithms/bfs";
 import { dfs } from "../../algorithms/dfs";
 import { aStar } from "../../algorithms/aStar";
-import "./Pathfinding.css";
+
+// Maze generation
 import { simpleMaze } from "../../mazeGeneration/simpleMaze";
 import { recursiveDivision } from "../../mazeGeneration/recursiveDivision";
 import { prim } from "../../mazeGeneration/prim";
+import { weightMaze } from "../../mazeGeneration/weightMaze";
+
+// Util
 import {
   getInitialGrid,
   toggleWall,
   toggleStart,
   toggleEnd,
+  toggleWeight,
   START_NODE_ROW,
   START_NODE_COL,
   FINISH_NODE_ROW,
@@ -34,6 +46,8 @@ export default class PathfindingVisualiser extends React.Component {
       end: [FINISH_NODE_ROW, FINISH_NODE_COL],
       visualizing: false,
       message: "Pick an Algorithm to Visualize!",
+      weightMode: false,
+      ifWeightedAlgorithm: true,
     };
   }
 
@@ -43,12 +57,14 @@ export default class PathfindingVisualiser extends React.Component {
   }
 
   handleMouseDown(row, col) {
-    const { start, end, grid, visualizing } = this.state;
+    const { start, end, grid, visualizing, weightMode } = this.state;
     if (visualizing) return;
     if (row === start[0] && col === start[1]) {
       this.setState({ movingStart: true });
     } else if (row === end[0] && col === end[1]) {
       this.setState({ movingEnd: true });
+    } else if (weightMode) {
+      toggleWeight(this.state.grid, row, col);
     } else {
       toggleWall(this.state.grid, row, col);
     }
@@ -56,6 +72,13 @@ export default class PathfindingVisualiser extends React.Component {
       grid: grid,
       mouseIsPressed: true,
     });
+  }
+
+  changeWeightMode() {
+    const { weightMode } = this.state;
+    weightMode
+      ? this.setState({ weightMode: false })
+      : this.setState({ weightMode: true });
   }
 
   handleMouseEnter(row, col) {
@@ -67,6 +90,7 @@ export default class PathfindingVisualiser extends React.Component {
       end,
       grid,
       visualizing,
+      weightMode,
     } = this.state;
 
     if (!mouseIsPressed) return;
@@ -83,6 +107,8 @@ export default class PathfindingVisualiser extends React.Component {
       toggleEnd(grid, row, col);
       toggleEnd(grid, end[0], end[1]);
       this.setState({ end: [row, col], movingEnd: true });
+    } else if (weightMode) {
+      toggleWeight(grid, row, col);
     } else {
       toggleWall(grid, row, col);
     }
@@ -109,12 +135,15 @@ export default class PathfindingVisualiser extends React.Component {
     }
   }
 
-  animateMaze(nodesInMaze) {
+  animateMaze(nodesInMaze, weights = false) {
     for (let i = 0; i <= nodesInMaze.length; i++) {
       setTimeout(() => {
         const node = nodesInMaze[i];
-        document.getElementById(`node-${node.row}-${node.col}`).className =
-          "node node-wall";
+        !weights
+          ? (document.getElementById(`node-${node.row}-${node.col}`).className =
+              "node node-wall")
+          : (document.getElementById(`node-${node.row}-${node.col}`).className =
+              "node node-weight");
       }, 10 * i);
     }
   }
@@ -128,6 +157,7 @@ export default class PathfindingVisualiser extends React.Component {
       [START_NODE_ROW, START_NODE_COL],
       [FINISH_NODE_ROW, FINISH_NODE_COL]
     );
+
     this.setState({
       start: [START_NODE_ROW, START_NODE_COL],
       end: [FINISH_NODE_ROW, FINISH_NODE_COL],
@@ -151,6 +181,9 @@ export default class PathfindingVisualiser extends React.Component {
         } else if (node.isWall) {
           document.getElementById(`node-${node.row}-${node.col}`).className =
             "node node-wall";
+        } else if (node.weight > 0) {
+          document.getElementById(`node-${node.row}-${node.col}`).className =
+            "node weight";
         }
         if (row === start[0] && col === start[1]) {
           document.getElementById(`node-${start[0]}-${start[1]}`).className =
@@ -181,6 +214,7 @@ export default class PathfindingVisualiser extends React.Component {
     this.setState({
       message:
         "Visualizing Dijkstra, a weighted algorithm which guarantees the shortest path.",
+      ifWeightedAlgorithm: true,
     });
     const { grid, start, end } = this.state;
     this.setState({ visualizing: true });
@@ -198,6 +232,7 @@ export default class PathfindingVisualiser extends React.Component {
     this.setState({
       message:
         "Visualizing Bellman Ford, a weighted algorithm which guarantees the shortest path.",
+      ifWeightedAlgorithm: true,
     });
     const { grid, start, end } = this.state;
     this.setState({ visualizing: true });
@@ -219,6 +254,7 @@ export default class PathfindingVisualiser extends React.Component {
     this.setState({
       message:
         "Visualizing BFS, an unweighted algorithm which guarantees the shortest path.",
+      ifWeightedAlgorithm: false,
     });
     const { grid, start, end } = this.state;
     this.setState({ visualizing: true });
@@ -236,6 +272,7 @@ export default class PathfindingVisualiser extends React.Component {
     this.setState({
       message:
         "Visualizing DFS, an unweighted algorithm which does not guarantee the shortest path.",
+      ifWeightedAlgorithm: false,
     });
     const { grid, start, end } = this.state;
     this.setState({ visualizing: true });
@@ -253,6 +290,7 @@ export default class PathfindingVisualiser extends React.Component {
     this.setState({
       message:
         "Visualizing A*, a weighted algorithm which guarantees the shortest path.",
+      ifWeightedAlgorithm: false,
     });
     const { grid, start, end } = this.state;
     this.setState({ visualizing: true });
@@ -272,6 +310,12 @@ export default class PathfindingVisualiser extends React.Component {
     simpleMaze(grid);
   }
 
+  visualizeWeightMaze() {
+    const { grid, start, end } = this.state;
+    this.unvisitNodes(true, start, end);
+    weightMaze(grid);
+  }
+
   visualizeRecursiveDivision() {
     const { grid, start, end } = this.state;
     this.unvisitNodes(true, start, end);
@@ -287,18 +331,31 @@ export default class PathfindingVisualiser extends React.Component {
   }
 
   render() {
-    const { grid, mouseIsPressed, message, visualizing } = this.state;
+    const {
+      grid,
+      mouseIsPressed,
+      message,
+      visualizing,
+      ifWeightedAlgorithm,
+    } = this.state;
     if (!visualizing) {
       return (
-        <>
-          {/* <h1 className="title">Pathfinding Visualizer</h1> */}
+        <div className="container">
           <div className="grid">
+            {/* <h1 className="title">Pathfinding Visualizer</h1> */}
             <h4>{message}</h4>
             {grid.map((row, rowIdx) => {
               return (
                 <div key={rowIdx}>
                   {row.map((node, nodeIdx) => {
-                    const { row, col, isFinish, isStart, isWall } = node;
+                    const {
+                      row,
+                      col,
+                      isFinish,
+                      isStart,
+                      isWall,
+                      weight,
+                    } = node;
                     return (
                       <Node
                         key={nodeIdx}
@@ -306,6 +363,7 @@ export default class PathfindingVisualiser extends React.Component {
                         isFinish={isFinish}
                         isStart={isStart}
                         isWall={isWall}
+                        weight={weight}
                         mouseIsPressed={mouseIsPressed}
                         onMouseDown={(row, col) =>
                           this.handleMouseDown(row, col)
@@ -358,6 +416,12 @@ export default class PathfindingVisualiser extends React.Component {
               Simple Maze
             </button>
             <button
+              onClick={() => this.visualizeWeightMaze()}
+              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
+            >
+              Weight Maze
+            </button>
+            <button
               onClick={() => this.visualizeRecursiveDivision()}
               className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
             >
@@ -375,6 +439,13 @@ export default class PathfindingVisualiser extends React.Component {
             >
               Clear Grid
             </button>
+            <button
+              disabled={ifWeightedAlgorithm || visualizing ? false : true}
+              onClick={() => this.changeWeightMode()}
+              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
+            >
+              Turn on Weights
+            </button>
           </div>
           <h4>
             <a
@@ -385,11 +456,11 @@ export default class PathfindingVisualiser extends React.Component {
             </a>{" "}
             by Henry Boisdequin
           </h4>
-        </>
+        </div>
       );
     } else {
       return (
-        <>
+        <div className="container">
           {/* <h1 className="title">Pathfinding Visualizer</h1> */}
           <div className="grid">
             <h4>{message}</h4>
@@ -458,6 +529,13 @@ export default class PathfindingVisualiser extends React.Component {
             </button>
             <button
               disabled
+              onClick={() => this.visualizeWeightMaze()}
+              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
+            >
+              Weight Maze
+            </button>
+            <button
+              disabled
               className="f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
             >
               Recursive Division
@@ -474,6 +552,13 @@ export default class PathfindingVisualiser extends React.Component {
             >
               Clear Grid
             </button>
+            <button
+              disabled={ifWeightedAlgorithm ? false : true}
+              onClick={() => this.changeWeightMode()}
+              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
+            >
+              Turn on Weights
+            </button>
           </div>
           <h4>
             <a
@@ -484,7 +569,7 @@ export default class PathfindingVisualiser extends React.Component {
             </a>{" "}
             by Henry Boisdequin
           </h4>
-        </>
+        </div>
       );
     }
   }

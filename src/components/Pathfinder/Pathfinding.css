@@ -9,6 +9,10 @@ body {
   margin: 100px 0 0;
 }
 
+.container {
+  margin-top: 4px;
+}
+
 .button-font {
   border: none;
   font-family: "Rubik", sans-serif;

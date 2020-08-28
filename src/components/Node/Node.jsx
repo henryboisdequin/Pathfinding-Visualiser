@@ -8,6 +8,7 @@ export default class Node extends React.Component {
       isFinish,
       isStart,
       isWall,
+      weight,
       onMouseDown,
       onMouseEnter,
       onMouseUp,
@@ -19,6 +20,8 @@ export default class Node extends React.Component {
       ? "node-start"
       : isWall
       ? "node-wall"
+      : weight
+      ? "node-weight"
       : "";
 
     return (

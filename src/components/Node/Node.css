@@ -46,6 +46,10 @@
   }
 }
 
+.node-weight {
+  background-image: url("https://d29fhpw069ctt2.cloudfront.net/icon/image/85218/preview.svg");
+}
+
 .node-wall {
   animation-name: wallAnimation;
   animation-duration: 1.5s;
@@ -60,13 +64,13 @@
 
 @keyframes wallAnimation {
   0% {
-    transform: scale(0.3);
-    background-color: rgb(12, 53, 71);
+    transform: scale(0.4);
+    background-color: rgb(104, 111, 114);
   }
 
   50% {
     transform: scale(1.2);
-    background-color: rgb(12, 53, 71);
+    background-color: rgb(55, 58, 71);
   }
 
   100% {

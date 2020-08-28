@@ -44,6 +44,10 @@ export const toggleEnd = (grid, row, col) => {
   grid[row][col].isFinish = !grid[row][col].isFinish;
 };
 
+export const toggleWeight = (grid, row, col) => {
+  grid[row][col].weight = 5;
+};
+
 export function getNodesInShortestPathOrder(finishNode) {
   const nodesInShortestPathOrder = [];
   let currentNode = finishNode;
