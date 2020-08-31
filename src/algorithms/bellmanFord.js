@@ -7,6 +7,7 @@ export function bellmanFord(grid, startNode, finishNode) {
   for (let i = 0; i < 19 * 49 - 1; i++) {
     for (const node of nodes) {
       if (node.isWall) continue;
+      if (node.weight) continue;
       const neighbors = getUnvisitedNeighbors(node, grid);
       const { row, col } = node;
       if (!visited[row * 49 + col] && neighbors.length > 0) {

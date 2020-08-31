@@ -37,6 +37,10 @@ import {
 export default class PathfindingVisualiser extends React.Component {
   constructor() {
     super();
+    this.mainButtonClass =
+      "button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font";
+    this.secondaryButtonClass =
+      "f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font";
     this.state = {
       grid: [],
       mouseIsPressed: false,
@@ -338,239 +342,152 @@ export default class PathfindingVisualiser extends React.Component {
       visualizing,
       ifWeightedAlgorithm,
     } = this.state;
-    if (!visualizing) {
-      return (
-        <div className="container">
-          <div className="grid">
-            {/* <h1 className="title">Pathfinding Visualizer</h1> */}
-            <h4>{message}</h4>
-            {grid.map((row, rowIdx) => {
-              return (
-                <div key={rowIdx}>
-                  {row.map((node, nodeIdx) => {
-                    const {
-                      row,
-                      col,
-                      isFinish,
-                      isStart,
-                      isWall,
-                      weight,
-                    } = node;
-                    return (
-                      <Node
-                        key={nodeIdx}
-                        col={col}
-                        isFinish={isFinish}
-                        isStart={isStart}
-                        isWall={isWall}
-                        weight={weight}
-                        mouseIsPressed={mouseIsPressed}
-                        onMouseDown={(row, col) =>
-                          this.handleMouseDown(row, col)
-                        }
-                        onMouseEnter={(row, col) =>
-                          this.handleMouseEnter(row, col)
-                        }
-                        onMouseUp={() => this.handleMouseUp()}
-                        row={row}
-                      />
-                    );
-                  })}
-                </div>
-              );
-            })}
-            <button
-              onClick={() => this.visualizeDijkstra()}
-              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
-            >
-              Visualize Dijkstra
-            </button>
-            <button
-              onClick={() => this.visualizeBellmanFord()}
-              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
-            >
-              Visualize Bellman Ford
-            </button>
-            <button
-              onClick={() => this.visualizeBFS()}
-              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
-            >
-              Visualize BFS
-            </button>
-            <button
-              onClick={() => this.visualizeAStar()}
-              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
-            >
-              Visualize A*
-            </button>
-            <button
-              onClick={() => this.visualizeDFS()}
-              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
-            >
-              Visualize DFS
-            </button>
-            <button
-              onClick={() => this.visualizeSimpleMaze()}
-              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
-            >
-              Simple Maze
-            </button>
-            <button
-              onClick={() => this.visualizeWeightMaze()}
-              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
-            >
-              Weight Maze
-            </button>
-            <button
-              onClick={() => this.visualizeRecursiveDivision()}
-              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
-            >
-              Recursive Division
-            </button>
-            <button
-              onClick={() => this.visualizePrim()}
-              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
-            >
-              Prim
-            </button>
-            <button
-              onClick={() => this.clearGrid()}
-              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
-            >
-              Clear Grid
-            </button>
-            <button
-              disabled={ifWeightedAlgorithm || visualizing ? false : true}
-              onClick={() => this.changeWeightMode()}
-              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
-            >
-              Turn on Weights
-            </button>
-          </div>
-          <h4>
-            <a
-              className="button"
-              href="https://github.com/henryboisdequin/Pathfinding-Visualiser"
-            >
-              Pathfinding Visualizer
-            </a>{" "}
-            by Henry Boisdequin
-          </h4>
-        </div>
-      );
-    } else {
-      return (
-        <div className="container">
+
+    return (
+      <div className="container">
+        <div className="grid">
           {/* <h1 className="title">Pathfinding Visualizer</h1> */}
-          <div className="grid">
-            <h4>{message}</h4>
-            {grid.map((row, rowIdx) => {
-              return (
-                <div key={rowIdx}>
-                  {row.map((node, nodeIdx) => {
-                    const { row, col, isFinish, isStart, isWall } = node;
-                    return (
-                      <Node
-                        key={nodeIdx}
-                        col={col}
-                        isFinish={isFinish}
-                        isStart={isStart}
-                        isWall={isWall}
-                        mouseIsPressed={mouseIsPressed}
-                        onMouseDown={(row, col) =>
-                          this.handleMouseDown(row, col)
-                        }
-                        onMouseEnter={(row, col) =>
-                          this.handleMouseEnter(row, col)
-                        }
-                        onMouseUp={() => this.handleMouseUp()}
-                        row={row}
-                      />
-                    );
-                  })}
-                </div>
-              );
-            })}
-            <button
-              disabled
-              className="f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
-            >
-              Visualize Dijkstra
-            </button>
-            <button
-              disabled
-              className="f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
-            >
-              Visualize Bellman Ford
-            </button>
-            <button
-              disabled
-              className="f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
-            >
-              Visualize BFS
-            </button>
-            <button
-              disabled
-              className="f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
-            >
-              Visualize A*
-            </button>
-            <button
-              disabled
-              className="f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
-            >
-              Visualize DFS
-            </button>
-            <button
-              disabled
-              className="f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
-            >
-              Simple Maze
-            </button>
-            <button
-              disabled
-              onClick={() => this.visualizeWeightMaze()}
-              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
-            >
-              Weight Maze
-            </button>
-            <button
-              disabled
-              className="f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
-            >
-              Recursive Division
-            </button>
-            <button
-              disabled
-              className="f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
-            >
-              Prim
-            </button>
-            <button
-              disabled
-              className="f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font"
-            >
-              Clear Grid
-            </button>
-            <button
-              disabled={ifWeightedAlgorithm ? false : true}
-              onClick={() => this.changeWeightMode()}
-              className="button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font"
-            >
-              Turn on Weights
-            </button>
-          </div>
-          <h4>
-            <a
-              className="button"
-              href="https://github.com/henryboisdequin/Pathfinding-Visualiser"
-            >
-              Pathfinding Visualizer
-            </a>{" "}
-            by Henry Boisdequin
-          </h4>
+          <h4>{message}</h4>
+          {grid.map((row, rowIdx) => {
+            return (
+              <div key={rowIdx}>
+                {row.map((node, nodeIdx) => {
+                  const { row, col, isFinish, isStart, isWall, weight } = node;
+                  return (
+                    <Node
+                      key={nodeIdx}
+                      col={col}
+                      isFinish={isFinish}
+                      isStart={isStart}
+                      isWall={isWall}
+                      weight={weight}
+                      mouseIsPressed={mouseIsPressed}
+                      onMouseDown={(row, col) => this.handleMouseDown(row, col)}
+                      onMouseEnter={(row, col) =>
+                        this.handleMouseEnter(row, col)
+                      }
+                      onMouseUp={() => this.handleMouseUp()}
+                      row={row}
+                    />
+                  );
+                })}
+              </div>
+            );
+          })}
+          <button
+            onClick={() => this.visualizeDijkstra()}
+            className={
+              !visualizing ? this.mainButtonClass : this.secondaryButtonClass
+            }
+            disabled={visualizing}
+          >
+            Visualize Dijkstra
+          </button>
+          <button
+            onClick={() => this.visualizeBellmanFord()}
+            className={
+              !visualizing ? this.mainButtonClass : this.secondaryButtonClass
+            }
+            disabled={visualizing}
+          >
+            Visualize Bellman Ford
+          </button>
+          <button
+            onClick={() => this.visualizeBFS()}
+            className={
+              !visualizing ? this.mainButtonClass : this.secondaryButtonClass
+            }
+            disabled={visualizing}
+          >
+            Visualize BFS
+          </button>
+          <button
+            onClick={() => this.visualizeAStar()}
+            className={
+              !visualizing ? this.mainButtonClass : this.secondaryButtonClass
+            }
+            disabled={visualizing}
+          >
+            Visualize A*
+          </button>
+          <button
+            onClick={() => this.visualizeDFS()}
+            className={
+              !visualizing ? this.mainButtonClass : this.secondaryButtonClass
+            }
+            disabled={visualizing}
+          >
+            Visualize DFS
+          </button>
+          <button
+            onClick={() => this.visualizeSimpleMaze()}
+            className={
+              !visualizing ? this.mainButtonClass : this.secondaryButtonClass
+            }
+            disabled={visualizing}
+          >
+            Simple Maze
+          </button>
+          <button
+            onClick={() => this.visualizeWeightMaze()}
+            className={
+              !visualizing ? this.mainButtonClass : this.secondaryButtonClass
+            }
+            disabled={visualizing}
+          >
+            Weight Maze
+          </button>
+          <button
+            onClick={() => this.visualizeRecursiveDivision()}
+            className={
+              !visualizing ? this.mainButtonClass : this.secondaryButtonClass
+            }
+            disabled={visualizing}
+          >
+            Recursive Division
+          </button>
+          <button
+            onClick={() => this.visualizePrim()}
+            className={
+              !visualizing ? this.mainButtonClass : this.secondaryButtonClass
+            }
+            disabled={visualizing}
+          >
+            Prim
+          </button>
+          <button
+            onClick={() => this.clearGrid()}
+            className={
+              !visualizing ? this.mainButtonClass : this.secondaryButtonClass
+            }
+            disabled={visualizing}
+          >
+            Clear Grid
+          </button>
+          <button
+            disabled={ifWeightedAlgorithm || visualizing ? false : true}
+            onClick={() => this.changeWeightMode()}
+            className={
+              !visualizing || ifWeightedAlgorithm
+                ? this.mainButtonClass
+                : this.secondaryButtonClass
+            }
+            // eslint-disable-next-line
+            disabled={visualizing}
+          >
+            Turn on Weights
+          </button>
         </div>
-      );
-    }
+        <h4>
+          <a
+            className="button"
+            href="https://github.com/henryboisdequin/Pathfinding-Visualiser"
+          >
+            Pathfinding Visualizer
+          </a>{" "}
+          by Henry Boisdequin
+        </h4>
+      </div>
+    );
   }
 }
