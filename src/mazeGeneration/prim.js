@@ -2,14 +2,12 @@ import { toggleWall } from "../helper";
 
 export function prim(grid) {
   primHelper(grid);
-  addInnerWalls(grid, true, 1, 47, 1, 17);
-  addOuterWalls(grid, 49, 20);
 }
 
 function primHelper(grid) {
-  for (const node of grid) {
-    node.isWall = true;
-  }
+  for (const node of grid) node.isWall = true;
+  addInnerWalls(grid, true, 1, 47, 1, 17);
+  addOuterWalls(grid, 49, 20);
 }
 
 function addOuterWalls(grid, width, height) {

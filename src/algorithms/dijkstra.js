@@ -1,5 +1,4 @@
 export function dijkstra(grid, startNode, finishNode) {
-  // Add weighted dijkstra
   const visitedNodesInOrder = [];
   startNode.distance = 0;
   const unvisitedNodes = getAllNodes(grid);
@@ -7,11 +6,25 @@ export function dijkstra(grid, startNode, finishNode) {
     sortNodesByDistance(unvisitedNodes);
     const closestNode = unvisitedNodes.shift();
     if (closestNode.isWall) continue;
-    if (closestNode.distance === Infinity) return visitedNodesInOrder;
+    if (closestNode.distance === Infinity) {
+      // visitedNodesInOrder.push(false);
+      return visitedNodesInOrder;
+    }
     closestNode.isVisited = true;
     visitedNodesInOrder.push(closestNode);
     if (closestNode === finishNode) return visitedNodesInOrder;
     updateUnvisitedNeighbors(closestNode, grid);
+    // const neighbors = getUnvisitedNeighbors(node, grid);
+    // const nodes = getAllNodes(grid);
+    // for (var node of nodes) {
+    //   for (const neighbor of neighbors) {
+    //     let newDistance = node.distance + neighbor.weight;
+    //     if (newDistance < neighbor.distance) {
+    //       neighbor.distance = newDistance;
+    //       neighbor.previousNode = node;
+    //     }
+    //   }
+    // }
   }
 }
 

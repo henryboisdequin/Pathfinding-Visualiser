@@ -1,3 +1,5 @@
+import { getNodesInShortestPathOrder } from "../helper";
+
 export function bellmanFord(grid, startNode, finishNode) {
   const visitedNodesInOrder = [];
   const nodes = getAllNodes(grid);
@@ -23,7 +25,7 @@ export function bellmanFord(grid, startNode, finishNode) {
       }
     }
   }
-  return [visitedNodesInOrder, getNodesInShortestPathOrderBF(finishNode)];
+  return [visitedNodesInOrder, getNodesInShortestPathOrder(finishNode)];
 }
 
 function getAllNodes(grid) {
@@ -34,16 +36,6 @@ function getAllNodes(grid) {
     }
   }
   return nodes;
-}
-
-export function getNodesInShortestPathOrderBF(finishNode) {
-  const nodesInShortestPathOrder = [];
-  let currentNode = finishNode;
-  while (currentNode !== null) {
-    nodesInShortestPathOrder.unshift(currentNode);
-    currentNode = currentNode.previousNode;
-  }
-  return nodesInShortestPathOrder;
 }
 
 function getUnvisitedNeighbors(node, grid) {

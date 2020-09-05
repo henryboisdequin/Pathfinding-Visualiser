@@ -1,4 +1,5 @@
-import React from "react";
+// React
+import React, { Component } from "react";
 
 // Styles
 import "./Pathfinding.css";
@@ -34,12 +35,12 @@ import {
   getNodesInShortestPathOrder,
 } from "../../helper";
 
-export default class PathfindingVisualiser extends React.Component {
+export default class PathfindingVisualiser extends Component {
   constructor() {
     super();
-    this.mainButtonClass =
+    this.MAIN_BUTTON_CLASS =
       "button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font";
-    this.secondaryButtonClass =
+    this.SECONDARY_BUTTON_ClASS =
       "f6 no-underline br-pill ph3 pv2 mb2 dib white bg-light-green button-font";
     this.state = {
       grid: [],
@@ -52,6 +53,7 @@ export default class PathfindingVisualiser extends React.Component {
       message: "Pick an Algorithm to Visualize!",
       weightMode: false,
       ifWeightedAlgorithm: true,
+      selectedAlgorithm: "dijkstra",
     };
   }
 
@@ -139,18 +141,18 @@ export default class PathfindingVisualiser extends React.Component {
     }
   }
 
-  animateMaze(nodesInMaze, weights = false) {
-    for (let i = 0; i <= nodesInMaze.length; i++) {
-      setTimeout(() => {
-        const node = nodesInMaze[i];
-        !weights
-          ? (document.getElementById(`node-${node.row}-${node.col}`).className =
-              "node node-wall")
-          : (document.getElementById(`node-${node.row}-${node.col}`).className =
-              "node node-weight");
-      }, 10 * i);
-    }
-  }
+  // animateMaze(nodesInMaze, weights = false) {
+  //   for (let i = 0; i <= nodesInMaze.length; i++) {
+  //     setTimeout(() => {
+  //       const node = nodesInMaze[i];
+  //       !weights
+  //         ? (document.getElementById(`node-${node.row}-${node.col}`).className =
+  //             "node node-wall")
+  //         : (document.getElementById(`node-${node.row}-${node.col}`).className =
+  //             "node node-weight");
+  //     }, 10 * i);
+  //   }
+  // }
 
   clearGrid() {
     const { visualizing } = this.state;
@@ -294,7 +296,7 @@ export default class PathfindingVisualiser extends React.Component {
     this.setState({
       message:
         "Visualizing A*, a weighted algorithm which guarantees the shortest path.",
-      ifWeightedAlgorithm: false,
+      ifWeightedAlgorithm: true,
     });
     const { grid, start, end } = this.state;
     this.setState({ visualizing: true });
@@ -345,8 +347,8 @@ export default class PathfindingVisualiser extends React.Component {
 
     return (
       <div className="container">
+        {/* Nav Bar instead of Buttons */}
         <div className="grid">
-          {/* <h1 className="title">Pathfinding Visualizer</h1> */}
           <h4>{message}</h4>
           {grid.map((row, rowIdx) => {
             return (
@@ -377,7 +379,9 @@ export default class PathfindingVisualiser extends React.Component {
           <button
             onClick={() => this.visualizeDijkstra()}
             className={
-              !visualizing ? this.mainButtonClass : this.secondaryButtonClass
+              !visualizing
+                ? this.MAIN_BUTTON_CLASS
+                : this.SECONDARY_BUTTON_ClASS
             }
             disabled={visualizing}
           >
@@ -386,7 +390,9 @@ export default class PathfindingVisualiser extends React.Component {
           <button
             onClick={() => this.visualizeBellmanFord()}
             className={
-              !visualizing ? this.mainButtonClass : this.secondaryButtonClass
+              !visualizing
+                ? this.MAIN_BUTTON_CLASS
+                : this.SECONDARY_BUTTON_ClASS
             }
             disabled={visualizing}
           >
@@ -395,7 +401,9 @@ export default class PathfindingVisualiser extends React.Component {
           <button
             onClick={() => this.visualizeBFS()}
             className={
-              !visualizing ? this.mainButtonClass : this.secondaryButtonClass
+              !visualizing
+                ? this.MAIN_BUTTON_CLASS
+                : this.SECONDARY_BUTTON_ClASS
             }
             disabled={visualizing}
           >
@@ -404,7 +412,9 @@ export default class PathfindingVisualiser extends React.Component {
           <button
             onClick={() => this.visualizeAStar()}
             className={
-              !visualizing ? this.mainButtonClass : this.secondaryButtonClass
+              !visualizing
+                ? this.MAIN_BUTTON_CLASS
+                : this.SECONDARY_BUTTON_ClASS
             }
             disabled={visualizing}
           >
@@ -413,7 +423,9 @@ export default class PathfindingVisualiser extends React.Component {
           <button
             onClick={() => this.visualizeDFS()}
             className={
-              !visualizing ? this.mainButtonClass : this.secondaryButtonClass
+              !visualizing
+                ? this.MAIN_BUTTON_CLASS
+                : this.SECONDARY_BUTTON_ClASS
             }
             disabled={visualizing}
           >
@@ -422,7 +434,9 @@ export default class PathfindingVisualiser extends React.Component {
           <button
             onClick={() => this.visualizeSimpleMaze()}
             className={
-              !visualizing ? this.mainButtonClass : this.secondaryButtonClass
+              !visualizing
+                ? this.MAIN_BUTTON_CLASS
+                : this.SECONDARY_BUTTON_ClASS
             }
             disabled={visualizing}
           >
@@ -431,7 +445,9 @@ export default class PathfindingVisualiser extends React.Component {
           <button
             onClick={() => this.visualizeWeightMaze()}
             className={
-              !visualizing ? this.mainButtonClass : this.secondaryButtonClass
+              !visualizing
+                ? this.MAIN_BUTTON_CLASS
+                : this.SECONDARY_BUTTON_ClASS
             }
             disabled={visualizing}
           >
@@ -440,7 +456,9 @@ export default class PathfindingVisualiser extends React.Component {
           <button
             onClick={() => this.visualizeRecursiveDivision()}
             className={
-              !visualizing ? this.mainButtonClass : this.secondaryButtonClass
+              !visualizing
+                ? this.MAIN_BUTTON_CLASS
+                : this.SECONDARY_BUTTON_ClASS
             }
             disabled={visualizing}
           >
@@ -449,7 +467,9 @@ export default class PathfindingVisualiser extends React.Component {
           <button
             onClick={() => this.visualizePrim()}
             className={
-              !visualizing ? this.mainButtonClass : this.secondaryButtonClass
+              !visualizing
+                ? this.MAIN_BUTTON_CLASS
+                : this.SECONDARY_BUTTON_ClASS
             }
             disabled={visualizing}
           >
@@ -458,7 +478,9 @@ export default class PathfindingVisualiser extends React.Component {
           <button
             onClick={() => this.clearGrid()}
             className={
-              !visualizing ? this.mainButtonClass : this.secondaryButtonClass
+              !visualizing
+                ? this.MAIN_BUTTON_CLASS
+                : this.SECONDARY_BUTTON_ClASS
             }
             disabled={visualizing}
           >
@@ -468,12 +490,10 @@ export default class PathfindingVisualiser extends React.Component {
             disabled={ifWeightedAlgorithm || visualizing ? false : true}
             onClick={() => this.changeWeightMode()}
             className={
-              !visualizing || ifWeightedAlgorithm
-                ? this.mainButtonClass
-                : this.secondaryButtonClass
+              !visualizing && ifWeightedAlgorithm
+                ? this.MAIN_BUTTON_CLASS
+                : this.SECONDARY_BUTTON_ClASS
             }
-            // eslint-disable-next-line
-            disabled={visualizing}
           >
             Turn on Weights
           </button>
