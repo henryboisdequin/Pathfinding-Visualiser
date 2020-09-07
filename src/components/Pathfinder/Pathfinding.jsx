@@ -28,16 +28,19 @@ import {
   toggleStart,
   toggleEnd,
   toggleWeight,
+  getNodesInShortestPathOrder,
+} from "../../helper";
+
+import {
   START_NODE_ROW,
   START_NODE_COL,
   FINISH_NODE_ROW,
   FINISH_NODE_COL,
-  getNodesInShortestPathOrder,
-} from "../../helper";
+} from "../../constants";
 
 export default class PathfindingVisualiser extends Component {
-  constructor() {
-    super();
+  constructor(...args) {
+    super(...args);
     this.MAIN_BUTTON_CLASS =
       "button f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-light-red button-font";
     this.SECONDARY_BUTTON_ClASS =

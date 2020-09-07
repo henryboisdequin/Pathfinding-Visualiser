@@ -1,11 +1,11 @@
-// Width, height
-const w = 20;
-const h = 49;
-
-export const START_NODE_ROW = 10;
-export const START_NODE_COL = 15;
-export const FINISH_NODE_ROW = 10;
-export const FINISH_NODE_COL = 35;
+import {
+  START_NODE_ROW,
+  START_NODE_COL,
+  FINISH_NODE_ROW,
+  FINISH_NODE_COL,
+  w,
+  h,
+} from "./constants";
 
 export const getInitialGrid = () => {
   const grid = [];
